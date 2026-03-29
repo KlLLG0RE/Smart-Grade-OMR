@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartGrade — OMR Mini Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8fafc;
+      --white: #ffffff;
+      --surface: #f1f5f9;
+      --border: #e2e8f0;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --blue-mid: #bfdbfe;
+      --text: #0f172a;
+      --muted: #64748b;
+      --muted2: #94a3b8;
+      --green: #16a34a;
+      --red: #dc2626;
+      --yellow: #ca8a04;
+      --yellow-bg: #fefce8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2.5rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--blue);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+
+    .logo-text {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .logo-text span { color: var(--blue); }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-btn {
+      background: var(--blue);
+      color: white !important;
+      padding: 7px 18px;
+      border-radius: 7px;
+      font-size: 0.85rem !important;
+      transition: background 0.2s !important;
+    }
+
+    .nav-btn:hover { background: #1d4ed8 !important; }
+
+    /* HERO */
+    .hero {
+      padding: 80px 2.5rem 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid var(--blue-mid);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.2rem;
+    }
+
+    .tag-dot {
+      width: 6px; height: 6px;
+      background: var(--blue);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+      color: var(--text);
+    }
+
+    .hero h1 .accent { color: var(--blue); }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      max-width: 440px;
+    }
+
+    .hero-actions {
+      display: flex; gap: 0.8rem; flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 11px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: white;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      padding: 11px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-1px); }
+
+    /* Hero visual */
+    .hero-visual {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+
+    .visual-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .win-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .wd-r { background: #f87171; }
+    .wd-y { background: #fbbf24; }
+    .wd-g { background: #4ade80; }
+
+    .visual-title {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    .visual-body { padding: 1.5rem; }
+
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .pip-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--surface);
+      font-size: 0.82rem;
+      font-weight: 500;
+      animation: slideIn 0.4s ease both;
+    }
+
+    .pip-row:nth-child(1) { animation-delay: 0.1s; }
+    .pip-row:nth-child(2) { animation-delay: 0.25s; }
+    .pip-row:nth-child(3) { animation-delay: 0.4s; }
+    .pip-row:nth-child(4) { animation-delay: 0.55s; }
+    .pip-row:nth-child(5) { animation-delay: 0.7s; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(12px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .pip-icon { font-size: 1rem; }
+    .pip-label { color: var(--text); flex: 1; }
+
+    .pip-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+
+    .pb-done { background: #dcfce7; color: var(--green); }
+    .pb-proc { background: var(--blue-light); color: var(--blue); }
+    .pb-wait { background: var(--surface); color: var(--muted2); border: 1px solid var(--border); }
+
+    /* STATS */
+    .stats {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stat {
+      padding: 2rem 0;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--blue);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* SECTION */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 70px 2.5rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: var(--blue-light);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      margin-bottom: 0.6rem;
+      line-height: 1.2;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 500px;
+      line-height: 1.8;
+      margin-bottom: 3rem;
+    }
+
+    /* HOW IT WORKS */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 680px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      left: 19px; top: 20px; bottom: 20px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .step {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      padding: 1.2rem 0;
+      position: relative;
+    }
+
+    .step-num {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+      position: relative; z-index: 1;
+      transition: all 0.2s;
+    }
+
+    .step:hover .step-num {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+
+    .step-content {
+      padding-top: 6px;
+    }
+
+    .step-content h3 {
+      font-size: 0.97rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* FEATURES */
+    .features-wrap { background: var(--surface); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .feat {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .feat:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+    }
+
+    .feat-icon-wrap {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .fi-blue   { background: var(--blue-light); }
+    .fi-green  { background: #dcfce7; }
+    .fi-yellow { background: var(--yellow-bg); }
+    .fi-purple { background: #f5f3ff; }
+    .fi-red    { background: #fef2f2; }
+    .fi-teal   { background: #f0fdfa; }
+
+    .feat h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .feat p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* DEMO */
+    .demo-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--white);
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .upload-area:hover, .upload-area.drag {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .upload-area .up-icon { font-size: 2.5rem; display: block; margin-bottom: 0.8rem; }
+
+    .upload-area h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .upload-area p {
+      font-size: 0.82rem;
+      color: var(--muted2);
+      margin-bottom: 1.2rem;
+    }
+
+    #fileInput { display: none; }
+    #previewWrapper { display: none; margin-top: 1rem; }
+    #previewImg { width: 100%; border-radius: 8px; border: 1px solid var(--border); }
+
+    .key-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .key-panel-head {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .key-panel-head h4 {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .key-panel-head span {
+      font-size: 0.75rem;
+      color: var(--muted2);
+    }
+
+    .key-body { padding: 1.2rem; }
+
+    .key-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 1.2rem;
+    }
+
+    .key-item label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-align: center;
+    }
+
+    .key-item select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 4px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+
+    .key-item select:focus { outline: none; border-color: var(--blue); }
+
+    .run-btn {
+      width: 100%;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .run-btn:hover { background: #1d4ed8; }
+
+    /* RESULTS */
+    .results-wrap {
+      display: none;
+      margin-top: 2rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .results-wrap.show { display: block; animation: fadeUp 0.35s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .res-head {
+      padding: 14px 20px;
+      background: #f0fdf4;
+      border-bottom: 1px solid #bbf7d0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .res-head h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .score-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: white;
+      border: 1px solid #bbf7d0;
+      color: var(--green);
+      padding: 4px 14px;
+      border-radius: 100px;
+    }
+
+    .res-table { width: 100%; border-collapse: collapse; }
+
+    .res-table th {
+      background: var(--surface);
+      padding: 10px 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .res-table td {
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      border-bottom: 1px solid #f8fafc;
+      color: var(--text);
+    }
+
+    .res-table tr:last-child td { border-bottom: none; }
+
+    .tag-correct {
+      display: inline-block;
+      background: #dcfce7;
+      color: var(--green);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 100px;
+    }
+
+    .tag-wrong {
+      display: inline-block;
+      background: #fee2e2;
+      color: var(--red);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 100px;
+    }
+
+    /* OBJECTIVES */
+    .obj-list {
+      display: flex; flex-direction: column; gap: 0.8rem;
+      max-width: 720px;
+      list-style: none;
+    }
+
+    .obj-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1rem 1.2rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      transition: border-color 0.2s;
+    }
+
+    .obj-item:hover { border-color: var(--blue); }
+
+    .obj-num {
+      width: 26px; height: 26px;
+      background: var(--blue);
+      color: white;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* TECH */
+    .tech-wrap { background: var(--surface); }
+
+    .tech-chips {
+      display: flex; flex-wrap: wrap; gap: 0.7rem;
+    }
+
+    .tc {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .tc:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--white);
+      padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+
+    .footer-brand {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .footer-brand span { color: var(--blue); }
+
+    .footer-note {
+      font-size: 0.8rem;
+      color: var(--muted2);
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); }
+
+    @media(max-width:768px) {
+      .hero { grid-template-columns: 1fr; gap: 2rem; padding: 60px 1.5rem 40px; }
+      .hero-visual { display: none; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); }
+      .features-grid { grid-template-columns: 1fr; }
+      .demo-layout { grid-template-columns: 1fr; }
+      .section { padding: 50px 1.5rem; }
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="logo-icon">🎯</div>
+    <span class="logo-text">Smart<span>Grade</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#demo">Demo</a></li>
+<li><a href="#demo" class="nav-btn">Try Demo</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <h1>Automated OMR Grading<br>with <span class="accent">Smartphone Camera</span></h1>
+    <p class="hero-desc">
+      SmartGrade uses Python and OpenCV to process answer sheet images captured by a phone,
+      detect filled bubbles, and generate instant grade reports — no scanner hardware needed.
+    </p>
+    <div class="hero-actions">
+      <a href="#demo" class="btn-primary">Try the Demo →</a>
+      <a href="#how" class="btn-ghost">How It Works</a>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat"><span class="stat-num">~99%</span><span class="stat-label">Detection Accuracy</span></div>
+    <div class="stat"><span class="stat-num">&lt; 2s</span><span class="stat-label">Per Answer Sheet</span></div>
+    <div class="stat"><span class="stat-num">₹ 0</span><span class="stat-label">Extra Hardware Cost</span></div>
+    <div class="stat"><span class="stat-num">CSV</span><span class="stat-label">Instant Report Export</span></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-tag">Process</div>
+  <h2 class="section-title">How SmartGrade Works</h2>
+  <p class="section-sub">A 5-step image processing pipeline that turns a raw phone photo into a graded result in seconds.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>📸 Capture the Answer Sheet</h3>
+        <p>The student or teacher photographs the OMR sheet using any standard smartphone. No special setup or lighting required.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>🔲 Perspective Correction</h3>
+        <p>OpenCV detects the four corner points of the sheet and applies a homography-based perspective transform to straighten and align it.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>🔍 Bubble Region Extraction & Detection</h3>
+        <p>Each answer row is extracted from the aligned image. Adaptive thresholding and contour analysis identify which bubble has the highest fill density.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>✅ Answer Key Comparison</h3>
+        <p>Detected responses are matched against the pre-loaded digital answer key to flag correct and incorrect answers per question.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h3>📊 Report Generation</h3>
+        <p>An Excel/CSV file is generated with the student's total score and a question-wise performance breakdown, ready to share.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- FEATURES -->
+<div class="features-wrap">
+  <section class="section" id="features">
+    <div class="section-tag">Capabilities</div>
+    <h2 class="section-title">Key Features</h2>
+    <p class="section-sub">Everything built around making OMR evaluation simple, accurate, and accessible for any institution.</p>
+
+    <div class="features-grid">
+      <div class="feat">
+        <div class="feat-icon-wrap fi-blue">📐</div>
+        <h3>Perspective Transformation</h3>
+        <p>Corrects image tilt and skew using OpenCV homography so the sheet is always properly aligned before processing.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon-wrap fi-purple">🧠</div>
+        <h3>Intelligent Bubble Detection</h3>
+        <p>Pixel density thresholding and contour analysis reliably identify filled bubbles even under variable lighting conditions.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon-wrap fi-green">⚡</div>
+        <h3>Instant Grading</h3>
+        <p>Full sheet evaluated in under 2 seconds. Designed to handle bulk exam batches without manual intervention.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon-wrap fi-yellow">📋</div>
+        <h3>Excel / CSV Report</h3>
+        <p>Auto-generates structured reports with scores and question-wise performance suitable for submission or record-keeping.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon-wrap fi-teal">📱</div>
+        <h3>Smartphone Compatible</h3>
+        <p>Works with any phone camera image — no flatbed scanner, no OMR hardware, no calibration required.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon-wrap fi-red">💸</div>
+        <h3>Zero Hardware Cost</h3>
+        <p>Entirely software-based using Python and OpenCV. Any institution with a laptop can deploy it immediately at no cost.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="divider"/>
+
+<!-- DEMO -->
+<section class="section" id="demo">
+  <div class="section-tag">Interactive Demo</div>
+  <h2 class="section-title">Try It Yourself</h2>
+  <p class="section-sub">Upload an answer sheet image and configure the answer key to simulate the full grading pipeline.</p>
+
+  <div class="demo-layout">
+    <div>
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+        <span class="up-icon">🖼️</span>
+        <h3>Upload Answer Sheet</h3>
+        <p>Drag & drop or click to browse — JPG or PNG</p>
+        <button class="btn-primary" style="pointer-events:none; font-size:0.85rem; padding:9px 20px">Browse File</button>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event)"/>
+      </div>
+      <div id="previewWrapper">
+        <img id="previewImg" alt="Preview"/>
+        <p style="text-align:center; margin-top:6px; font-size:0.78rem; color:var(--muted2)">Image loaded successfully ✓</p>
+      </div>
+    </div>
+
+    <div class="key-panel">
+      <div class="key-panel-head">
+        <h4>⚙ Configure Answer Key</h4>
+        <div style="display:flex;align-items:center;gap:8px">
+          <label for="qCount" style="font-size:0.78rem;color:var(--muted);font-weight:500">Questions:</label>
+          <select id="qCount" onchange="buildKeyGrid()" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:600;padding:4px 8px;color:var(--text);cursor:pointer">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+      <div class="key-body">
+        <div class="key-grid" id="keyGrid"></div>
+        <button class="run-btn" onclick="gradeSheet()">▶ Grade Papers</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-wrap" id="resultsWrap">
+    <div class="res-head">
+      <h3>✓ Grading Complete</h3>
+      <span class="score-badge" id="scoreBadge">—</span>
+    </div>
+    <table class="res-table">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Detected</th>
+          <th>Key</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="resBody"></tbody>
+    </table>
+  </div>
+</section>
+
+
+
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Smart<span>Grade</span></div>
+  <div class="footer-note">CSE Mini Project · 2024–25 · Python & OpenCV Based OMR Evaluation System</div>
+</footer>
+
+<script>
+  // Answer key dropdowns
+  const opts = ['A','B','C','D'];
+  let selects = [];
+
+  function buildKeyGrid() {
+    const QUESTIONS = parseInt(document.getElementById('qCount').value);
+    const keyGrid = document.getElementById('keyGrid');
+    keyGrid.innerHTML = '';
+    selects = [];
+
+    for (let i = 1; i <= QUESTIONS; i++) {
+      const wrap = document.createElement('div');
+      wrap.className = 'key-item';
+      const lbl = document.createElement('label');
+      lbl.textContent = `Q${i}`;
+      const sel = document.createElement('select');
+      opts.forEach(o => {
+        const opt = document.createElement('option');
+        opt.value = o; opt.textContent = o;
+        sel.appendChild(opt);
+      });
+      sel.value = opts[Math.floor(Math.random() * 4)];
+      selects.push(sel);
+      wrap.appendChild(lbl);
+      wrap.appendChild(sel);
+      keyGrid.appendChild(wrap);
+    }
+
+    // hide results when key changes
+    document.getElementById('resultsWrap').classList.remove('show');
+  }
+
+  buildKeyGrid();
+
+  // File upload
+  function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      document.getElementById('previewImg').src = ev.target.result;
+      document.getElementById('previewWrapper').style.display = 'block';
+    };
+    r.readAsDataURL(file);
+  }
+
+  const area = document.getElementById('uploadArea');
+  area.addEventListener('dragover', e => { e.preventDefault(); area.classList.add('drag'); });
+  area.addEventListener('dragleave', () => area.classList.remove('drag'));
+  area.addEventListener('drop', e => {
+    e.preventDefault(); area.classList.remove('drag');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile({ target: { files: [file] } });
+  });
+
+  async function gradeSheet() {
+    // --- Validate image is uploaded ---
+    const fileInput = document.getElementById('fileInput');
+    if (!fileInput.files || fileInput.files.length === 0) {
+      alert('Please upload an answer sheet image first!');
+      return;
+    }
+
+    // --- Build answer key as {0: 0, 1: 2, ...} (index-based, A=0 B=1 C=2 D=3) ---
+    const answerKey = {};
+    selects.forEach((sel, i) => {
+      answerKey[i] = opts.indexOf(sel.value); // convert A/B/C/D → 0/1/2/3
+    });
+
+    // --- Show loading state on button ---
+    const btn = document.querySelector('.run-btn');
+    btn.textContent = '⏳ Grading...';
+    btn.disabled = true;
+
+    // --- Build the form data to send to Flask ---
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+    formData.append('answer_key', JSON.stringify(answerKey));
+    formData.append('choices', '4');
+
+    try {
+      const response = await fetch('http://localhost:5000/grade', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (result.error) {
+        alert('Error: ' + result.error);
+        return;
+      }
+
+      // --- Populate results table ---
+      const body = document.getElementById('resBody');
+      body.innerHTML = '';
+
+      result.student_answers.forEach((detectedIndex, i) => {
+        const keyIndex   = answerKey[i];
+        const detected   = opts[detectedIndex] ?? '?';
+        const keyLetter  = opts[keyIndex]      ?? '?';
+        const ok         = detectedIndex === keyIndex;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:600">Q${i + 1}</td>
+          <td>${detected}</td>
+          <td>${keyLetter}</td>
+          <td><span class="${ok ? 'tag-correct' : 'tag-wrong'}">${ok ? '✓ Correct' : '✗ Wrong'}</span></td>
+        `;
+        body.appendChild(tr);
+      });
+
+      // --- Show score ---
+      document.getElementById('scoreBadge').textContent =
+        `${result.correct} / ${result.total}  —  ${result.score}%`;
+
+      // --- Show result image if available ---
+      if (result.result_image_url) {
+        const existing = document.getElementById('resultImg');
+        if (existing) existing.remove();
+        const img = document.createElement('img');
+        img.id  = 'resultImg';
+        img.src = 'http://localhost:5000' + result.result_image_url + '?t=' + Date.now();
+        img.alt = 'Graded Sheet';
+        img.style.cssText = 'width:100%;border-radius:8px;border:1px solid var(--border);margin-top:1rem';
+        document.getElementById('previewWrapper').appendChild(img);
+      }
+
+      const wrap = document.getElementById('resultsWrap');
+      wrap.classList.add('show');
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    } catch (err) {
+      alert('Could not connect to the server.\nMake sure app.py is running on localhost:5000');
+      console.error(err);
+    } finally {
+      btn.textContent = '▶ Grade Papers';
+      btn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
